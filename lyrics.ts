@@ -71,18 +71,47 @@ export async function fetchLyrics(song: Song) {
   return formatted;
 }
 
-export function pickLyric(lyrics: string) {
-  const sections = lyrics.split("\n\n");
-  const section = sections[Math.floor(Math.random() * sections.length)];
+function takeWhile<T>(set: T[], predicate: (r: T[]) => boolean) {
+  const result: T[] = [];
+  for (let i = 0; i < set.length; i++) {
+    // Roll to stop adding more elements (1/n chance to add)
+    if (set.length / (set.length - i) < Math.random()) return result;
 
-  // Small chance of just returning the whole section
-  if (section.length <= CHARACTER_LIMIT) {
-    if (Math.random() < 0.1) return section;
+    // Add the element
+    result.push(set[i]);
+
+    // If adding this element fails the predicate, return without it.
+    if (!predicate(result)) return result.slice(0, -1);
   }
 
+  return result;
+}
+
+export function pickLyric(lyrics: string) {
+  const sections = lyrics.split("\n\n");
+  const sectionStart = Math.floor(Math.random() * sections.length);
+
+  // Chance of just returning the whole section
+  if (Math.random() < 0.25) {
+    const result = takeWhile(
+      sections.slice(sectionStart),
+      (r) => r.join("\n\n").length <= CHARACTER_LIMIT,
+    );
+    if (result.length) return result.join("\n\n");
+  }
+
+  const section = sections[sectionStart];
   const lines = section.split("\n");
-  const start = Math.floor(Math.random() * lines.length);
-  const end =
-    Math.floor(Math.random() * (lines.length - (start - 1))) + start + 1;
-  return lines.slice(start, end).join("\n");
+  const lineStart = Math.floor(Math.random() * lines.length);
+
+  const result = takeWhile(
+    lines.slice(lineStart),
+    (r) => r.join("\n").length <= CHARACTER_LIMIT,
+  );
+
+  console.log(lines.slice(lineStart), result);
+
+  if (!result.length) return pickLyric(lyrics);
+
+  return result.join("\n");
 }

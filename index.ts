@@ -17,6 +17,7 @@ async function skeet() {
   const lyrics = await fetchLyrics(song);
   const lyric = pickLyric(lyrics);
   console.log(`Skeeting lyric from "${song.title}" (${song.url})`);
+
   await agent.post({ text: lyric });
 }
 
