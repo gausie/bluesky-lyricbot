@@ -16,9 +16,11 @@ async function skeet() {
   const song = songs[Math.floor(Math.random() * songs.length)];
   const lyrics = await fetchLyrics(song);
   const lyric = pickLyric(lyrics);
-  console.log(`Skeeting lyric from "${song.title}" (${song.url})`);
+  console.log(`Posting lyric from "${song.title}" (${song.url})`);
 
   await agent.post({ text: lyric });
 }
 
 const job = new Cron("0 * * * *", skeet);
+
+console.log("Started,", job.msToNext(), "ms to next post");
