@@ -22,5 +22,3 @@ async function skeet() {
 }
 
 const job = new Cron("0 * * * *", skeet);
-
-job.trigger();
