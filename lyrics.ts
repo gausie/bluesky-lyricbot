@@ -1,5 +1,8 @@
 import parse from "node-html-parser";
 
+const ARTIST_ID = 40035;
+const CHARACTER_LIMIT = 300;
+
 // Minimal typings for the API results, we don't need most of it
 type Song = {
   id: number;
@@ -7,8 +10,6 @@ type Song = {
   url: string;
   lyrics_state: "unreleased" | "complete";
 };
-
-const ARTIST_ID = 40035;
 
 async function getch(url: string) {
   const res = await fetch(`https://api.genius.com/${url}`, {
@@ -73,6 +74,12 @@ export async function fetchLyrics(song: Song) {
 export function pickLyric(lyrics: string) {
   const sections = lyrics.split("\n\n");
   const section = sections[Math.floor(Math.random() * sections.length)];
+
+  // Small chance of just returning the whole section
+  if (section.length <= CHARACTER_LIMIT) {
+    if (Math.random() < 0.1) return section;
+  }
+
   const lines = section.split("\n");
   const start = Math.floor(Math.random() * lines.length);
   const end =
