@@ -20,6 +20,6 @@ async function skeet() {
   await agent.post({ text: lyric });
 }
 
-const job = new Cron("*/10 * * * *", skeet);
+const job = new Cron("0 * * * *", skeet);
 
 job.trigger();
