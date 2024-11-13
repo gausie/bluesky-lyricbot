@@ -109,8 +109,6 @@ export function pickLyric(lyrics: string) {
     (r) => r.join("\n").length <= CHARACTER_LIMIT,
   );
 
-  console.log(lines.slice(lineStart), result);
-
   if (!result.length) return pickLyric(lyrics);
 
   return result.join("\n");
