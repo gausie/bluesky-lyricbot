@@ -7,13 +7,16 @@ const agent = new AtpAgent({
 });
 
 async function skeet() {
-  await agent.login({ identifier: process.env.BLUESKY_USERNAME!, password: process.env.BLUESKY_PASSWORD! });
+  await agent.login({
+    identifier: process.env.BLUESKY_USERNAME!,
+    password: process.env.BLUESKY_PASSWORD!,
+  });
 
   const songs = await fetchSongs();
   const song = songs[Math.floor(Math.random() * songs.length)];
   const lyrics = await fetchLyrics(song);
   const lyric = pickLyric(lyrics);
-
+  console.log(`Skeeting lyric from "${song.title}" (${song.url})`);
   await agent.post({ text: lyric });
 }
 

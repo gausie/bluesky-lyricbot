@@ -2,15 +2,18 @@ import parse from "node-html-parser";
 
 // Minimal typings for the API results, we don't need most of it
 type Song = {
-  id: number,
-  url: string,
-  lyrics_state: "unreleased" | "complete"
+  id: number;
+  title: string;
+  url: string;
+  lyrics_state: "unreleased" | "complete";
 };
 
 const ARTIST_ID = 40035;
 
 async function getch(url: string) {
-  const res = await fetch(`https://api.genius.com/${url}`, { headers: { Authorization: `Bearer ${process.env.GENIUS_TOKEN}` } });
+  const res = await fetch(`https://api.genius.com/${url}`, {
+    headers: { Authorization: `Bearer ${process.env.GENIUS_TOKEN}` },
+  });
   return await res.json();
 }
 
@@ -22,9 +25,13 @@ export async function fetchSongs() {
   let page = 1;
 
   while (page) {
-    const results = await getch(`artists/${ARTIST_ID}/songs?per_page=50&page=${page}`);
+    const results = await getch(
+      `artists/${ARTIST_ID}/songs?per_page=50&page=${page}`,
+    );
     if (results.meta.status !== 200) break;
-    const songs = results.response.songs.filter((s: Song) => s.lyrics_state !== "unreleased");
+    const songs = results.response.songs.filter(
+      (s: Song) => s.lyrics_state !== "unreleased",
+    );
     SONG_CACHE.push(...songs);
     page = results.response.next_page;
   }
@@ -53,7 +60,10 @@ export async function fetchLyrics(song: Song) {
     return "";
   }
 
-  const formatted = lyrics.replaceAll(/\[.*?\]/g, "").replaceAll(/\n{3,}/g, "\n\n").trim();
+  const formatted = lyrics
+    .replaceAll(/\[.*?\]/g, "")
+    .replaceAll(/\n{3,}/g, "\n\n")
+    .trim();
 
   Bun.write(file, formatted);
 
@@ -65,6 +75,7 @@ export function pickLyric(lyrics: string) {
   const section = sections[Math.floor(Math.random() * sections.length)];
   const lines = section.split("\n");
   const start = Math.floor(Math.random() * lines.length);
-  const end = Math.floor(Math.random() * (lines.length - (start - 1))) + start + 1;
+  const end =
+    Math.floor(Math.random() * (lines.length - (start - 1))) + start + 1;
   return lines.slice(start, end).join("\n");
 }
