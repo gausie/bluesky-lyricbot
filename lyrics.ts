@@ -1,4 +1,5 @@
 import parse from "node-html-parser";
+import { config } from "./config";
 
 const CHARACTER_LIMIT = 300;
 
@@ -12,7 +13,7 @@ type Song = {
 
 async function getch(url: string) {
   const res = await fetch(`https://api.genius.com/${url}`, {
-    headers: { Authorization: `Bearer ${process.env.GENIUS_TOKEN}` },
+    headers: { Authorization: `Bearer ${config.GENIUS_TOKEN}` },
   });
   return await res.json();
 }
@@ -26,7 +27,7 @@ export async function fetchSongs() {
 
   while (page) {
     const results = await getch(
-      `artists/${process.env.GENUIUS_ARTIST_ID}/songs?per_page=50&page=${page}`,
+      `artists/${config.GENIUS_ARTIST_ID}/songs?per_page=50&page=${page}`,
     );
     if (results.meta.status !== 200) break;
     const songs = results.response.songs.filter(

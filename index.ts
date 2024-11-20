@@ -1,15 +1,7 @@
 import { AtpAgent } from "@atproto/api";
 import { fetchLyrics, fetchSongs, pickLyric } from "./lyrics";
 import { Cron } from "croner";
-
-declare module "bun" {
-  interface Env {
-    BLUESKY_USERNAME: string;
-    BLUESKY_PASSWORD: string;
-    GENIUS_ARTIST_ID: string;
-    GENIUS_TOKEN: string;
-  }
-}
+import { config } from "./config";
 
 const agent = new AtpAgent({
   service: "https://bsky.social",
@@ -17,8 +9,8 @@ const agent = new AtpAgent({
 
 async function skeet() {
   await agent.login({
-    identifier: process.env.BLUESKY_USERNAME,
-    password: process.env.BLUESKY_PASSWORD,
+    identifier: config.BLUESKY_USERNAME,
+    password: config.BLUESKY_PASSWORD,
   });
 
   const songs = await fetchSongs();
