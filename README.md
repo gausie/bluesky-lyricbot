@@ -1,4 +1,16 @@
-# ajjthebot
+# bluesky-lyricbot
+
+## Usage
+
+This package is deployed as a docker image on GHCR
+
+```shell
+docker pull ghcr.io/gausie/bluesky-lyricbot
+```
+
+You will need to provide some environment variables for the bot to work, see `.env.example` for more information.
+
+## Development
 
 To install dependencies:
 

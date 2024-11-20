@@ -1,6 +1,5 @@
 import parse from "node-html-parser";
 
-const ARTIST_ID = 40035;
 const CHARACTER_LIMIT = 300;
 
 // Minimal typings for the API results, we don't need most of it
@@ -27,7 +26,7 @@ export async function fetchSongs() {
 
   while (page) {
     const results = await getch(
-      `artists/${ARTIST_ID}/songs?per_page=50&page=${page}`,
+      `artists/${process.env.GENUIUS_ARTIST_ID}/songs?per_page=50&page=${page}`,
     );
     if (results.meta.status !== 200) break;
     const songs = results.response.songs.filter(
