@@ -1,6 +1,8 @@
 import { AtpAgent } from "@atproto/api";
-import { fetchLyrics, fetchSongs, pickLyric } from "./lyrics";
 import { Cron } from "croner";
+import prettyMilliseconds from "pretty-ms";
+
+import { fetchLyrics, fetchSongs, pickLyric } from "./lyrics";
 import { config } from "./config";
 
 const agent = new AtpAgent({
@@ -24,4 +26,10 @@ async function skeet() {
 
 const job = new Cron("0 * * * *", skeet);
 
-console.log("Started,", job.msToNext(), "ms to next post");
+const ms = job.msToNext();
+
+if (!ms) {
+  console.error("Started, but no job is scheduled for some reason");
+} else {
+  console.log("Started,", prettyMilliseconds(ms), "to next post");
+}
